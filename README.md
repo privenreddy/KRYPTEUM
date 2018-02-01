@@ -1,2 +1,2 @@
-# kryteum
+# krypteum
 smart contract
