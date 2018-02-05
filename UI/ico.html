@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div id="metamask_missing"></div>  
+        <h5>To buy <span id="symbol"></span> please send Ether to address below</h5>
+        <p><span id="contract_address"></span></p>
+        <p>or use QR code</p>
+        <img src="" class="qr-code img-thumbnail img-responsive">
+        <p>Please be sure your wallet supports ERC20 tokens, don't send Ethers from any exchanges.</p>
+        <div>
+            <p>Ico start on: <span id="ico_start_date"></span></p>
+            <p>Ico end on: <span id="ico_end_date"></span></p>
+            <p>Total ethers received: <span id="output"></span></p>
+            <p id="current_tier"></p>
+            <p id="total_coins"></p>
+        </div>
+        <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.min.js"></script>
+        <script>
+        // Contract address
+        var address = "0x09ffc8b2360dd4a42538e17e74522d1cb703861b";
+        // Connect to web3.js
+        window.onload=function(){if(typeof web3!=='undefined'){web3=new Web3(web3.currentProvider)}else{$("#metamask_missing").html('You need <a target="_blank" href="https://metamask.io/">MetaMask</a> browser plugin to run this');
+        web3=new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))}}
+        web3.eth.defaultAccount=web3.eth.accounts[0];var krypteumContract=web3.eth.contract([{"constant":true,"inputs":[],"name":"wallet","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"locked","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"numberOfCoinsAvailableInIcoTier","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"icoEtherReceived","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"icoEtherContributed","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"icoCoinsReceived","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COOLDOWN_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"costOfACoinInWeiForTier","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_MARKETING_TOTAL","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TOTAL","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedMkt","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_3","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedIco","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_2","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DATE_ICO_END","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"atNow","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_1","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DATE_ICO_START","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_3","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowed","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_2","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_1","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"administrator","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"isTransferable","outputs":[{"name":"transferable","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_participant","type":"address"}],"name":"removeLock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"constant":false,"inputs":[{"name":"_participants","type":"address[]"}],"name":"removeLockMultiple","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_admin","type":"address"}],"name":"setAdministrator","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":false,"inputs":[{"name":"_wallet","type":"address"}],"name":"setWallet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferProposed","type":"event"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_amount","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address"},{"name":"amount","type":"uint256"}],"name":"transferAnyERC20Token","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_coins","type":"uint256"},{"indexed":false,"name":"_balance","type":"uint256"}],"name":"CoinsMinted","type":"event"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_participant","type":"address"},{"name":"_coins","type":"uint256"}],"name":"grantCoins","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_newAdministrator","type":"address"}],"name":"AdministratorUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"},{"constant":false,"inputs":[{"name":"_addresses","type":"address[]"},{"name":"_amounts","type":"uint256[]"}],"name":"transferMultiple","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_participant","type":"address"}],"name":"LockRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_newWallet","type":"address"}],"name":"WalletUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_coins","type":"uint256"},{"indexed":false,"name":"_balance","type":"uint256"},{"indexed":false,"name":"_etherContributed","type":"uint256"}],"name":"CoinsIssued","type":"event"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]);var krypteum=krypteumContract.at(address)
+        const promisify = (inner) =>
+            new Promise((resolve, reject) =>
+                inner((err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+            })
+        );
+        async function getFunctions() {
+            ico_start_date      = promisify(cb => krypteum.DATE_ICO_START(cb))
+            ico_end_date        = promisify(cb => krypteum.DATE_ICO_END(cb))
+            ether_received      = promisify(cb => krypteum.icoEtherReceived(cb))
+            coins_ico_supply    = promisify(cb => krypteum.COIN_SUPPLY_ICO_TOTAL(cb))
+            tier1               = promisify(cb => krypteum.COIN_SUPPLY_ICO_TIER_1(cb))
+            tier1_cost          = promisify(cb => krypteum.COIN_COST_ICO_TIER_1(cb))
+            tier2               = promisify(cb => krypteum.COIN_SUPPLY_ICO_TIER_2(cb))
+            tier2_cost          = promisify(cb => krypteum.COIN_COST_ICO_TIER_2(cb))
+            tier3               = promisify(cb => krypteum.COIN_SUPPLY_ICO_TIER_3(cb))
+            tier3_cost          = promisify(cb => krypteum.COIN_COST_ICO_TIER_3(cb))
+            ico_coins_issued    = promisify(cb => krypteum.coinsIssuedIco(cb))
+            symbol              = promisify(cb => krypteum.symbol(cb))
+            // Coins format.
+            var decimals = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 0,
+            });
+            try {
+                // Coin symbol
+                document.getElementById("symbol").innerHTML = await symbol;
+                // Contract address
+                document.getElementById("contract_address").innerHTML = address;
+                // ICO start and end dates
+                var dateTime = new Date(await ico_start_date*1000);
+                $("#ico_start_date").text(dateTime.toGMTString());
+                var dateTime = new Date(await ico_end_date*1000);
+                $("#ico_end_date").text(dateTime.toGMTString());
+                // Await functions
+                ico_coins_issued   = await ico_coins_issued;
+                tier1              = await tier1;
+                tier1_cost         = await tier1_cost;
+                tier2              = await tier2;
+                tier2_cost         = await tier2_cost;
+                tier3              = await tier3;
+                tier3_cost         = await tier3_cost;
+                // Getting current tier
+                if (ico_coins_issued.c[0] < tier1.c[0]) {
+                    current_tier = 'Current tier has ' + decimals.format(tier1.c[0] - ico_coins_issued.c[0]) + ' out of ' + decimals.format(tier1.c[0]) + ' ' + await symbol + ' remaining at ' + web3.fromWei(await tier1_cost, 'ether') + ' ETH per ' + await symbol;
+                } else if(ico_coins_issued.c[0] >= tier1.c[0] && ico_coins_issued.c[0] < tier1.c[0] + tier2.c[0]) {
+                    current_tier = 'Current tier has ' + decimals.format(tier1.c[0] + tier2.c[0] - ico_coins_issued.c[0]) + ' out of ' + decimals.format(tier2.c[0]) + await symbol + ' remaining at $' + web3.fromWei(await tier2_cost, 'ether') + ' ETH per ' + await symbol;
+                } else {
+                    current_tier = 'Current tier has ' + decimals.format(tier1.c[0] + tier2.c[0] + tier3.c[0] - ico_coins_issued.c[0]) + ' out of ' + decimals.format(tier3.c[0]) + await symbol + ' remaining at $' + web3.fromWei(await tier3_cost, 'ether') + ' ETH per ' + await symbol;
+                }
+                document.getElementById("current_tier").innerHTML = current_tier;
+                // Getting total issued and total supply
+                document.getElementById("total_coins").innerHTML = 'Total ' + decimals.format(ico_coins_issued) + ' ' + await symbol + ' issued out of ' + decimals.format(await coins_ico_supply);
+                // Getting current balance
+                balance = web3.fromWei(await ether_received, 'ether');
+                document.getElementById("output").innerHTML = balance + " ETH";
+            } catch (error) {
+                document.getElementById("output").innerHTML = error;
+            }
+        }
+        getFunctions()
+        </script>
+        <script>
+        // Generate the QR code from contract address
+        $(function() {	  
+        $(".qr-code").attr("src", "https://chart.googleapis.com/chart?cht=qr&chl=" + address + "&chs=160x160&chld=L|0");
+        });	
+        </script>
+    </body>
+</html>

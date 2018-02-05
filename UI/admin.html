@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Krypteum contract</title>
+</head>
+    <body>
+        <div id="metamask_missing"></div>
+        <p><b>Name:</b> <span id="name"></span></p>
+        <p><b>Symbol:</b> <span id="symbol"></span></p>
+        <p><b>Contract address:</b> <span id="contract_address"></span></p>
+        <h1>Transfer ownership</h1>
+        <h5> <b>Current owner address</b></h5><span id="current_owner"></span>
+        <label>Set new owner</label>
+        <input type="text" id="new_owner_address" placeholder="Fill new owner address">
+        <button type="submit" id="set_new_owner" onclick="setOwner()" > Set New Owner </button>
+        <p id="message"></p>
+        
+        <h1>Accept ownership</h1>
+        <h5> <b>Proposed new owner address pending to accept ownership</b></h5><span id="pending_owner_address"></span>
+        <button type="submit" id="accept_ownership" onclick="acceptOwnership()"> Accept ownership </button>
+        
+        <h1>Set Wallet</h1>
+        <h5> <b>Please fill field to set new wallet address</b></h5>
+        <p>Current wallet address: <span id="current_wallet_address"></span></p>
+        <label>Set new Wallet</label>
+        <input type="text" id="new_wallet_address" placeholder="Fill new wallet address">
+        <button type="submit" id="set_wallet" onclick="setWallet()"> Set Wallet </button>
+        <p id="message"></p>
+
+        <h1>Set Administrator</h1>
+        <h5> <b>Please fill field to set new admin address</b></h5>
+        <p>Current admin address: <span id="current_admin_address"></span></p>
+        <label>Set new Admin</label>
+        <input type="text" id="new_admin_address" placeholder="Fill new admin address">
+        <button type="submit" id="set_admin" onclick="setAdmin()"> Set Admin </button>
+        
+        <h1>Grant Marketing Coins</h1>
+        <h5> <b>Fill participant address, coins amount and click Send button</b></h5>
+        <p id="total_mkt_coins"></p>
+        <label>Fill participant address</label>
+        <input type="text" id="participants_address" placeholder="Participant address">
+        <label>Fill grant coins amount</label>
+        <input type="text" id="grant_coins" placeholder="Grant coins amount">
+        <button type="submit" id="send_grant_coins" onclick="grantCoins()"> Grant Coins</button>
+        <span id="output"></span>
+        <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.min.js"></script>
+        <script>
+        // Contract address
+        var address = "0x09ffc8b2360dd4a42538e17e74522d1cb703861b";
+        // Connect to web3.js
+        window.onload=function(){if(typeof web3!=='undefined'){web3=new Web3(web3.currentProvider)}else{$("#metamask_missing").html('You need <a target="_blank" href="https://metamask.io/">MetaMask</a> browser plugin to run this');
+        web3=new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))}}
+        web3.eth.defaultAccount=web3.eth.accounts[0];var krypteumContract=web3.eth.contract([{"constant":true,"inputs":[],"name":"wallet","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"locked","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"numberOfCoinsAvailableInIcoTier","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"icoEtherReceived","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"icoEtherContributed","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"icoCoinsReceived","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COOLDOWN_PERIOD","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"costOfACoinInWeiForTier","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_MARKETING_TOTAL","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedTotal","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TOTAL","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedMkt","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_3","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"coinsIssuedIco","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_2","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DATE_ICO_END","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"atNow","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_SUPPLY_ICO_TIER_1","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"DATE_ICO_START","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_3","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowed","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_2","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"COIN_COST_ICO_TIER_1","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"administrator","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"istransactionable","outputs":[{"name":"transactionable","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_participant","type":"address"}],"name":"removeLock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"constant":false,"inputs":[{"name":"_participants","type":"address[]"}],"name":"removeLockMultiple","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_admin","type":"address"}],"name":"setAdministrator","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"transaction","type":"event"},{"constant":false,"inputs":[{"name":"_wallet","type":"address"}],"name":"setWallet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershiptransactionProposed","type":"event"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transaction","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_amount","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address"},{"name":"amount","type":"uint256"}],"name":"transactionAnyERC20Token","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_coins","type":"uint256"},{"indexed":false,"name":"_balance","type":"uint256"}],"name":"CoinsMinted","type":"event"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transactionFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_participant","type":"address"},{"name":"_coins","type":"uint256"}],"name":"grantCoins","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"Ownershiptransactionred","type":"event"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_newAdministrator","type":"address"}],"name":"AdministratorUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"},{"constant":false,"inputs":[{"name":"_addresses","type":"address[]"},{"name":"_amounts","type":"uint256[]"}],"name":"transactionMultiple","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_participant","type":"address"}],"name":"LockRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_newWallet","type":"address"}],"name":"WalletUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":false,"name":"_coins","type":"uint256"},{"indexed":false,"name":"_balance","type":"uint256"},{"indexed":false,"name":"_etherContributed","type":"uint256"}],"name":"CoinsIssued","type":"event"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transactionOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]);var krypteum=krypteumContract.at(address)
+        const promisify = (inner) =>
+            new Promise((resolve, reject) =>
+                inner((err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+            })
+        );
+        // Set Owner
+        async function setOwner() {
+            var address, transaction
+            address = document.getElementById("new_owner_address").value
+            transaction = promisify(cb => krypteum.transactionOwnership(address, cb))
+            try {
+                await transaction
+            } catch (error) {
+            }
+        }
+        // Accept ownership
+        async function acceptOwnership() {
+            var transaction
+            transaction = promisify(cb => krypteum.acceptOwnership(cb))
+            try {
+                await transaction
+            } catch (error) {
+            }
+        }
+        // Set Wallet
+        async function setWallet() {
+            address = document.getElementById("new_wallet_address").value
+            transaction = promisify(cb => krypteum.setWallet(address, cb))
+            try {
+                await transaction
+            } catch (error) {
+            }
+        }
+        // Set Administrator
+        async function setAdmin() {
+            address = document.getElementById("new_admin_address").value
+            transaction = promisify(cb => krypteum.setAdministrator(address, cb))
+            try {
+                await transaction
+            } catch (error) {
+            }
+        }
+        // Grant coins
+        async function grantCoins() {
+            var address, amount, transaction
+            address = document.getElementById("participants_address").value
+            amount = document.getElementById("grant_coins").value
+            transaction = promisify(cb => krypteum.grantCoins(address,amount, cb))
+            try {
+                await transaction
+            } catch (error) {
+            }
+        }
+
+        
+        async function getFunctions() {
+            var name,symbol,owner,newOwner,wallet,administrator,marketingCoinsTotal,coinsIssuedMkt
+            symbol                  = promisify(cb => krypteum.symbol(cb))
+            name                    = promisify(cb => krypteum.name(cb))            
+            owner                   = promisify(cb => krypteum.owner(cb))
+            newOwner                = promisify(cb => krypteum.newOwner(cb))
+            wallet                  = promisify(cb => krypteum.wallet(cb))
+            administrator           = promisify(cb => krypteum.administrator(cb))
+            marketingCoinsTotal     = promisify(cb => krypteum.COIN_SUPPLY_MARKETING_TOTAL(cb))
+            coinsIssuedMkt          = promisify(cb => krypteum.coinsIssuedMkt(cb))
+            try {
+                // Coin name
+                document.getElementById("name").innerHTML = await name;
+                // Symbol
+                document.getElementById("symbol").innerHTML = await symbol;
+                // Contract address
+                document.getElementById("contract_address").innerHTML = address;
+                // Current Owner address
+                document.getElementById("current_owner").innerHTML = await owner;
+                // New owner address pending
+                document.getElementById("pending_owner_address").innerHTML = await newOwner;
+                // Current Admin address
+                document.getElementById("current_admin_address").innerHTML = await administrator;
+                // Current Wallet address
+                document.getElementById("current_wallet_address").innerHTML = await wallet;
+                // Total MKT coins
+                document.getElementById("total_mkt_coins").innerHTML = 'Total ' + await coinsIssuedMkt + ' ' + await symbol + ' issued out of ' + await marketingCoinsTotal + ' ' + await symbol;
+            } catch (error) {
+                document.getElementById("output").innerHTML = error;
+            }
+        }
+        getFunctions()
+        </script>
+    </body>
+</html>

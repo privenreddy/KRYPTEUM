@@ -6,7 +6,7 @@ pragma solidity ^0.4.18;
 //
 // ----------------------------------------------------------------------------
 
-import "./ERC20Coin.sol";
+import "./erc20/ERC20Coin.sol";
 
 contract krypteum is ERC20Coin {
 
@@ -17,22 +17,22 @@ contract krypteum is ERC20Coin {
   uint8  public constant decimals = 2;
 
   /* Wallet and Admin addresses - initially set to owner at deployment */
-  
+
   address public wallet;
   address public administrator;
 
   /* ICO dates */
 
-  uint public constant DATE_ICO_START = 1515542400; // 10-Jan-2018 00:00 GMT
-  uint public constant DATE_ICO_END   = 1520726340; // 10-Mar-2018 23:59 GMT
+  uint public constant DATE_ICO_START = 1518480000; // 13-Feb-2018 00:00 GMT
+  uint public constant DATE_ICO_END   = 1522713540; // 2-Apr-2018 23:59 GMT
 
   /* ICO coins per ETH */
   uint public constant COIN_COST_ICO_TIER_1 = 110 finney; // 0.11 ETH
   uint public constant COIN_COST_ICO_TIER_2 = 120 finney; // 0.12 ETH
   uint public constant COIN_COST_ICO_TIER_3 = 130 finney; // 0.13 ETH
-  
-  /* ICO and other coin supply parameters */  
-  
+
+  /* ICO and other coin supply parameters */
+
   uint public constant COIN_SUPPLY_ICO_TIER_1 = 50000; // 50K coins
   uint public constant COIN_SUPPLY_ICO_TIER_2 = 25000; // 25K coins
   uint public constant COIN_SUPPLY_ICO_TIER_3 = 25000; // 25K coins
@@ -41,9 +41,9 @@ contract krypteum is ERC20Coin {
 
   uint public constant COIN_SUPPLY_MARKETING_TOTAL =   200000; // 200K coins
 
-  /* Other ICO parameters */  
+  /* Other ICO parameters */
 
-  uint public constant COOLDOWN_PERIOD =  7 days;
+  uint public constant COOLDOWN_PERIOD =  24 hours;
 
   /* Crowdsale variables */
 
@@ -52,20 +52,20 @@ contract krypteum is ERC20Coin {
   uint public coinsIssuedIco  = 0;
   uint[] public numberOfCoinsAvailableInIcoTier;
   uint[] public costOfACoinInWeiForTier;
-  
+
   /* Keep track of Ether contributed and coins received during Crowdsale */
-  
+
   mapping(address => uint) public icoEtherContributed;
   mapping(address => uint) public icoCoinsReceived;
 
-  /* Keep track of participants who 
+  /* Keep track of participants who
   /* - have reclaimed their contributions in case of failed Crowdsale */
   /* - are locked */
-  
+
   mapping(address => bool) public locked;
 
   // Events ---------------------------
-  
+
   event WalletUpdated(address _newWallet);
   event AdministratorUpdated(address _newAdministrator);
   event CoinsMinted(address indexed _owner, uint _coins, uint _balance);
@@ -92,25 +92,25 @@ contract krypteum is ERC20Coin {
   }
 
   /* Fallback */
-  
+
   function () public payable {
     buyCoins();
   }
-  
+
   // Information functions ------------
-  
+
   /* What time is it? */
-  
+
   function atNow() public constant returns (uint) {
     return now;
   }
-  
+
     /* Are coins transferable? */
 
   function isTransferable() public constant returns (bool transferable) {
       return atNow() >= DATE_ICO_END + COOLDOWN_PERIOD;
   }
-  
+
   // Lock functions -------------------
 
   /* Manage locked */
@@ -124,7 +124,7 @@ contract krypteum is ERC20Coin {
 
   function removeLockMultiple(address[] _participants) public {
     require(msg.sender == administrator || msg.sender == owner);
-    
+
     for (uint i = 0; i < _participants.length; i++) {
       locked[_participants[i]] = false;
       LockRemoved(_participants[i]);
@@ -132,7 +132,7 @@ contract krypteum is ERC20Coin {
   }
 
   // Owner Functions ------------------
-  
+
   /* Change the crowdsale wallet address */
 
   function setWallet(address _wallet) public onlyOwner {
@@ -154,15 +154,15 @@ contract krypteum is ERC20Coin {
   function grantCoins(address _participant, uint _coins) public onlyOwner {
     // check amount
     require(_coins <= COIN_SUPPLY_MARKETING_TOTAL.sub(coinsIssuedMkt));
-    
+
     // update balances
     balances[_participant] = balances[_participant].add(_coins);
     coinsIssuedMkt = coinsIssuedMkt.add(_coins);
     coinsIssuedTotal = coinsIssuedTotal.add(_coins);
-    
+
     // locked
     locked[_participant] = true;
-    
+
     // log the minting
     Transfer(0x0, _participant, _coins);
     CoinsMinted(_participant, _coins, balances[_participant]);
@@ -182,7 +182,7 @@ contract krypteum is ERC20Coin {
     uint ts = atNow();
     uint coins = 0;
     uint change = 0;
-    
+
     // check dates for ICO
     require(DATE_ICO_START < ts && ts < DATE_ICO_END);
 
@@ -202,14 +202,14 @@ contract krypteum is ERC20Coin {
     icoCoinsReceived[msg.sender] = icoCoinsReceived[msg.sender].add(coins);
     coinsIssuedIco = coinsIssuedIco.add(coins);
     coinsIssuedTotal = coinsIssuedTotal.add(coins);
-    
+
     // register Ether
     icoEtherReceived = icoEtherReceived.add(msg.value).sub(change);
     icoEtherContributed[msg.sender] = icoEtherContributed[msg.sender].add(msg.value).sub(change);
-    
+
     // locked
     locked[msg.sender] = true;
-    
+
     // log coin issuance
     Transfer(0x0, msg.sender, coins);
     CoinsIssued(msg.sender, coins, balances[msg.sender], msg.value.sub(change));
@@ -260,7 +260,7 @@ contract krypteum is ERC20Coin {
 
     return super.transfer(_to, _amount);
   }
-  
+
   /* Override "transferFrom" (ERC20) */
 
   function transferFrom(address _from, address _to, uint _amount) public returns (bool success) {
@@ -282,8 +282,8 @@ contract krypteum is ERC20Coin {
     require(_addresses.length == _amounts.length);
 
     for (uint i = 0; i < _addresses.length; i++) {
-      if (locked[_addresses[i]] == false) 
+      if (locked[_addresses[i]] == false)
          super.transfer(_addresses[i], _amounts[i]);
     }
-  }  
+  }
 }
