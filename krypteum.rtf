@@ -1,0 +1,156 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang16393{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.16299}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang9 contract Token \{\par
+\par
+    /// @return total amount of tokens\par
+    function totalSupply() constant returns (uint256 supply) \{\}\par
+\par
+    /// @param _owner The address from which the balance will be retrieved\par
+    /// @return The balance\par
+    function balanceOf(address _owner) constant returns (uint256 balance) \{\}\par
+\par
+    /// @notice send `_value` token to `_to` from `msg.sender`\par
+    /// @param _to The address of the recipient\par
+    /// @param _value The amount of token to be transferred\par
+    /// @return Whether the transfer was successful or not\par
+    function transfer(address _to, uint256 _value) returns (bool success) \{\}\par
+\par
+    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\par
+    /// @param _from The address of the sender\par
+    /// @param _to The address of the recipient\par
+    /// @param _value The amount of token to be transferred\par
+    /// @return Whether the transfer was successful or not\par
+    function transferFrom(address _from, address _to, uint256 _value) returns (bool success) \{\}\par
+\par
+    /// @notice `msg.sender` approves `_addr` to spend `_value` tokens\par
+    /// @param _spender The address of the account able to transfer the tokens\par
+    /// @param _value The amount of wei to be approved for transfer\par
+    /// @return Whether the approval was successful or not\par
+    function approve(address _spender, uint256 _value) returns (bool success) \{\}\par
+\par
+    /// @param _owner The address of the account owning tokens\par
+    /// @param _spender The address of the account able to transfer the tokens\par
+    /// @return Amount of remaining tokens allowed to spent\par
+    function allowance(address _owner, address _spender) constant returns (uint256 remaining) \{\}\par
+\par
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);\par
+    event Approval(address indexed _owner, address indexed _spender, uint256 _value);\par
+\}\par
+\par
+\par
+/*\par
+This implements ONLY the standard functions and NOTHING else.\par
+For a token like you would want to deploy in something like Mist, see HumanStandardToken.sol.\par
+\par
+If you deploy this, you won't have anything useful.\par
+\par
+Implements ERC 20 Token standard: {{\field{\*\fldinst{HYPERLINK https://github.com/ethereum/EIPs/issues/20 }}{\fldrslt{https://github.com/ethereum/EIPs/issues/20\ul0\cf0}}}}\f0\fs22\par
+.*/\par
+\par
+contract StandardToken is Token \{\par
+\par
+    function transfer(address _to, uint256 _value) returns (bool success) \{\par
+        //Default assumes totalSupply can't be over max (2^256 - 1).\par
+        //If your token leaves out totalSupply and can issue more tokens as time goes on, you need to check if it doesn't wrap.\par
+        //Replace the if with this one instead.\par
+        //if (balances[msg.sender] >= _value && balances[_to] + _value > balances[_to]) \{\par
+        if (balances[msg.sender] >= _value && _value > 0) \{\par
+            balances[msg.sender] -= _value;\par
+            balances[_to] += _value;\par
+            Transfer(msg.sender, _to, _value);\par
+            return true;\par
+        \} else \{ return false; \}\par
+    \}\par
+\par
+    function transferFrom(address _from, address _to, uint256 _value) returns (bool success) \{\par
+        //same as above. Replace this line with the following if you want to protect against wrapping uints.\par
+        //if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) \{\par
+        if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && _value > 0) \{\par
+            balances[_to] += _value;\par
+            balances[_from] -= _value;\par
+            allowed[_from][msg.sender] -= _value;\par
+            Transfer(_from, _to, _value);\par
+            return true;\par
+        \} else \{ return false; \}\par
+    \}\par
+\par
+    function balanceOf(address _owner) constant returns (uint256 balance) \{\par
+        return balances[_owner];\par
+    \}\par
+\par
+    function approve(address _spender, uint256 _value) returns (bool success) \{\par
+        allowed[msg.sender][_spender] = _value;\par
+        Approval(msg.sender, _spender, _value);\par
+        return true;\par
+    \}\par
+\par
+    function allowance(address _owner, address _spender) constant returns (uint256 remaining) \{\par
+      return allowed[_owner][_spender];\par
+    \}\par
+\par
+    mapping (address => uint256) balances;\par
+    mapping (address => mapping (address => uint256)) allowed;\par
+    uint256 public totalSupply;\par
+\}\par
+\par
+/*\par
+This Token Contract implements the standard token functionality ({{\field{\*\fldinst{HYPERLINK https://github.com/ethereum/EIPs/issues/20 }}{\fldrslt{https://github.com/ethereum/EIPs/issues/20\ul0\cf0}}}}\f0\fs22 ) as well as the following OPTIONAL extras intended for use by humans.\par
+\par
+In other words. This is intended for deployment in something like a Token Factory or Mist wallet, and then used by humans.\par
+Imagine coins, currencies, shares, voting weight, etc.\par
+Machine-based, rapid creation of many tokens would not necessarily need these extra features or will be minted in other manners.\par
+\par
+1) Initial Finite Supply (upon creation one specifies how much is minted).\par
+2) In the absence of a token registry: Optional Decimal, Symbol & Name.\par
+3) Optional approveAndCall() functionality to notify a contract if an approval() has occurred.\par
+\par
+.*/\par
+\par
+contract HumanStandardToken is StandardToken \{\par
+\par
+    function () \{\par
+        //if ether is sent to this address, send it back.\par
+        throw;\par
+    \}\par
+\par
+    /* Public variables of the token */\par
+\par
+    /*\par
+    NOTE:\par
+    The following variables are OPTIONAL vanities. One does not have to include them.\par
+    They allow one to customise the token contract & in no way influences the core functionality.\par
+    Some wallets/interfaces might not even bother to look at this information.\par
+    */\par
+    string public name;                   //fancy name: eg Simon Bucks\par
+    uint8 public decimals;                //How many decimals to show. ie. There could 1000 base units with 3 decimals. Meaning 0.980 SBX = 980 base units. It's like comparing 1 wei to 1 ether.\par
+    string public symbol;                 //An identifier: eg SBX\par
+    string public version = 'H0.1';       //human 0.1 standard. Just an arbitrary versioning scheme.\par
+\par
+    function HumanStandardToken(\par
+        uint256 _initialAmount,\par
+        string _tokenName,\par
+        uint8 _decimalUnits,\par
+        string _tokenSymbol\par
+        ) \{\par
+        balances[msg.sender] = _initialAmount;               // Give the creator all initial tokens\par
+        totalSupply = _initialAmount;                        // Update total supply\par
+        name = _tokenName;                                   // Set the name for display purposes\par
+        decimals = _decimalUnits;                            // Amount of decimals for display purposes\par
+        symbol = _tokenSymbol;                               // Set the symbol for display purposes\par
+    \}\par
+\par
+    /* Approves and then calls the receiving contract */\par
+    function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) \{\par
+        allowed[msg.sender][_spender] = _value;\par
+        Approval(msg.sender, _spender, _value);\par
+\par
+        //call the receiveApproval function on the contract you want to be notified. This crafts the function signature manually so one doesn't have to include a contract in here just for this.\par
+        //receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)\par
+        //it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.\par
+        if(!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) \{ throw; \}\par
+        return true;\par
+    \}\par
+\}\par
+}
+ 
